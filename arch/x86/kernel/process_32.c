@@ -58,6 +58,7 @@
 #include <asm/syscalls.h>
 #include <asm/debugreg.h>
 #include <asm/nmi.h>
+#include <asm/s2e/s2e.h>
 
 asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
 
@@ -259,6 +260,11 @@ start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
 	 * Free the old FP and other extended state
 	 */
 	free_thread_xstate(current);
+	/* This is called after an exec, to set up the user context.
+	 * TODO: Might be worth calling after a fork too, and have some sort
+	 * of address space update event when exec kicks in.
+	 */
+	s2e_notify_start_thread(current);
 }
 EXPORT_SYMBOL_GPL(start_thread);
 

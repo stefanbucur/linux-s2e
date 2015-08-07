@@ -23,6 +23,7 @@
 #include <asm/uaccess.h>
 #include <asm/i387.h>
 #include <asm/debugreg.h>
+#include <asm/s2e/s2e.h>
 
 struct kmem_cache *task_xstate_cachep;
 EXPORT_SYMBOL_GPL(task_xstate_cachep);
@@ -83,6 +84,8 @@ void exit_thread(void)
 		put_cpu();
 		kfree(bp);
 	}
+
+    s2e_notify_exit_thread(me);
 }
 
 void show_regs(struct pt_regs *regs)
